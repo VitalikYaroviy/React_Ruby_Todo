@@ -1,21 +1,18 @@
 Doorkeeper.configure do
-  # enable_application_owner :confirmation => false
-  # Change the ORM that doorkeeper will use (needs plugins)
   orm :active_record
 
   resource_owner_authenticator do
     # raise "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
-    User.find_by_id(session[:user_id]) || redirect_to(new_session_url)
-    # warden.authenticate!(scope: :user)
+    User.find_by_id(session[:current_user_id]) || redirect_to(login_url)
+    # User.find_by_id session[:user_id] || warden.authenticate!(:scope => :user)
   end
 
-  resource_owner_from_credentials do
+  resource_owner_from_credentials do |routes|
     User.find_by(email: params[:username])&.authenticate(params[:password]) || nil
   end
 
-  default_scopes  :api
+  default_scopes  :public
   optional_scopes :write
-  # optional_scopes :admin, :write
 
   skip_authorization do |resource_owner, client|
     true

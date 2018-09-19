@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   include ActionController::RequestForgeryProtection
+  include ActionController::MimeResponds
   protect_from_forgery except: :create
 
   private

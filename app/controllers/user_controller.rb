@@ -1,6 +1,6 @@
 class UserController < ApplicationController
 
-  before_action :doorkeeper_authorize!
+  skip_before_action :doorkeeper_authorize!, [:new, :create], :raise => false
 
   def index
     user = current_user

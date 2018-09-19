@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Signin from "./Signin";
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 class Registration extends Component {
 
