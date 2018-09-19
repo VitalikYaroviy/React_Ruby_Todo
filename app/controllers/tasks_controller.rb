@@ -42,6 +42,11 @@ class TasksController < ApplicationController
     render json: @posts
   end
 
+  def destroy_multiple
+    Task.destroy(params[:ids])
+    render json: User.find(doorkeeper_token[:resource_owner_id]).tasks
+  end
+
   def task_params
     data = JSON.parse(request.body.read)
     params = ActionController::Parameters.new(task: data)

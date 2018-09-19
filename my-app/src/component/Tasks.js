@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-// import EditableLabel from 'react-inline-editing';
 import { RIEToggle, RIEInput, RIETextArea, RIENumber, RIETags, RIESelect } from 'riek'
 import _ from 'lodash'
 
@@ -17,7 +16,6 @@ class Tasks extends Component {
     };
     this.clearLocal = this.clearLocal.bind(this);
     this.createTask = this.createTask.bind(this);
-    this.buildTask = this.buildTask.bind(this);
   }
 
   static contextTypes = {
@@ -45,42 +43,6 @@ class Tasks extends Component {
     localStorage.removeItem('token');
     this.context.router.history.push(`/`)
   }
-
-  buildTask = (data) => {
-    this.setState({tasks: data})
-    // for (let i = 0; i < this.state.tasks.length; i++) {
-    //   let tr = document.createElement('tr');
-    //   // tr.id = data[i].id;
-    //   let tbody = document.getElementById('tbody');
-    //   let tdActive = document.createElement('td');
-    //   let active = document.createElement('input');
-    //   let select = document.createElement('input');
-    //   active.type = 'checkbox';
-    //   let title = document.createElement('td');
-    //   // title.innerText = data[i].title;
-    //   title.innerText = this.state.tasks[i].title;
-    //   let priority = document.createElement('td');
-    //   priority.innerText = data[i].priority;
-    //   let date = document.createElement('td');
-    //   // date.innerText = data[i].date_task;
-    //   date.innerText = this.state.tasks[i].date_task;
-    //   let tdSelect = document.createElement('td');
-    //   select.type = 'checkbox';
-    //   let blockButtons = document.createElement('td');
-    //   let edit = document.createElement('button');
-    //   let destroy = document.createElement('button');
-    //   edit.innerText = 'Edit';
-    //   destroy.innerText = 'Destroy';
-    //   destroy.id = this.state.tasks[i].id
-    //   destroy.onclick = this.destroyTask;
-    //   tdActive.append(active);
-    //   tdSelect.append(select);
-    //   blockButtons.append(edit, destroy);
-    //   tr.append(tdActive, title, priority, date, tdSelect, blockButtons);
-    //   tbody.append(tr)
-    // }
-
-  };
 
   createTask = (e) => {
     e.preventDefault();
@@ -115,7 +77,6 @@ class Tasks extends Component {
   };
 
   httpTaskCallback = (task) => (text) => {
-    debugger
     task.title = text.title;
     fetch(`http://localhost:3000/api/tasks/${task.id}`,
       {
@@ -126,6 +87,41 @@ class Tasks extends Component {
           'Content-Type': 'application/json'
         }),
       }).then((response) => response.json())
+  };
+
+  selectAllTasks = (e)  => {
+    e.preventDefault();
+    let checkbox = document.querySelectorAll('input[name=select]');
+    for(let i = 0; i < checkbox.length; i++){
+      checkbox[i].checked = true
+    }
+  };
+
+  uncheckAllTasks = (e)  => {
+    e.preventDefault();
+    let checkbox = document.querySelectorAll('input[name=select]');
+    for(let i = 0; i < checkbox.length; i++){
+      checkbox[i].checked = false
+    }
+  };
+
+  removeCheckTasks = (e) => {
+    e.preventDefault();
+    let checkedBoxes = document.querySelectorAll('input[name=select]:checked');
+    let listTask = [];
+    for (let i = 0; i < checkedBoxes.length; i++ ) {
+      listTask.push(checkedBoxes[i].id)
+    }
+    fetch('http://localhost:3000/api/destroy_multiple',
+      {
+        method: "DELETE",
+        body: JSON.stringify({ids: listTask}),
+        headers: new Headers({
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }),
+      }).then((response) => response.json())
+      .then((data) => this.setState({tasks: data}))
   };
 
   render() {
@@ -148,6 +144,9 @@ class Tasks extends Component {
             <input type="date" id="date_task" name="date_task" className='data' onChange={this.handleChange}/>
             <br/>
             <button onClick={this.createTask}>Add</button>
+            <button onClick={this.selectAllTasks}>Select all</button>
+            <button onClick={this.uncheckAllTasks}>Uncheck all</button>
+            <button onClick={this.removeCheckTasks}>Remove all</button>
           </form>
         </div>
 
@@ -164,7 +163,7 @@ class Tasks extends Component {
           </thead>
           <tbody id="tbody">
           {this.state.tasks.map((item, i) => (
-            <tr id="addr0" key={i}>
+            <tr key={i}>
               <td><input type='checkbox'/></td>
               <td>
                 <RIEInput
@@ -176,13 +175,12 @@ class Tasks extends Component {
               </td>
               <td>
                 {item.priority}
-                {/*<input type="text" name="priority" defaultValue={this.state.tasks[i].priority}/>*/}
               </td>
               <td>
                 {item.date_task}
               </td>
               <td>
-                <input type='checkbox'/>
+                <input id={item.id} name="select" type='checkbox'/>
               </td>
               <td>
                 <button onClick={this.handleRemoveSpecificRow(i, item)}>Remove</button>

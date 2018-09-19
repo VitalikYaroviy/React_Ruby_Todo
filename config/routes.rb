@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :user
     resources :tasks
     get 'user', to: 'user#show'
+    delete 'destroy_multiple' => 'tasks#destroy_multiple', :as => 'destroy_multiple'
   end
 
   scope 'auth' do
