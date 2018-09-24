@@ -50,7 +50,7 @@ class TasksController < ApplicationController
   def task_params
     data = JSON.parse(request.body.read)
     params = ActionController::Parameters.new(task: data)
-    params.require(:task).permit(:title, :body, :priority, :date_task)
+    params.require(:task).permit(:title, :body, :priority, :date_task, :status)
   end
 
   private

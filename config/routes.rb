@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   # end
   scope '/api' do
     use_doorkeeper
-    resources :user
+    resources :user do
+      member do
+        get :confirm_email
+      end
+    end
     resources :tasks
     get 'user', to: 'user#show'
     delete 'destroy_multiple' => 'tasks#destroy_multiple', :as => 'destroy_multiple'
@@ -12,7 +16,6 @@ Rails.application.routes.draw do
 
   scope 'auth' do
     use_doorkeeper scope: 'endpoint' do
-      # Customize controllers
       controllers authorizations: 'custom_authorizations',
                   tokens: 'custom_authorizations',
                   applications: 'custom_authorizations',

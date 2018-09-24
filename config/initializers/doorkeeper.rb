@@ -8,7 +8,10 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do |routes|
-    User.find_by(email: params[:username])&.authenticate(params[:password]) || nil
+    user = User.find_by(email: params[:username])
+    if (user.email_confirmed)
+      user.authenticate(params[:password]) || nil
+    end
   end
 
   default_scopes  :public
@@ -214,3 +217,5 @@ Doorkeeper.configure do
   #
   # realm "Doorkeeper"
 end
+Doorkeeper::OAuth::TokenResponse.send :prepend, CustomTokenResponse
+Doorkeeper::OAuth::ErrorResponse.send :prepend, CustomTokenErrorResponse

@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
-import {Button} from 'reactstrap';
-import PropTypes from 'prop-types';
+import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col} from 'reactstrap';
 
 
 class Signin extends Component {
@@ -12,6 +10,7 @@ class Signin extends Component {
     this.state = {
       email: '',
       password: '',
+      errors: {},
     };
   }
 
@@ -23,55 +22,58 @@ class Signin extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const loginInfo = `username=${this.state.email}&password=${this.state.password}&grant_type=password`;
-
     fetch('http://localhost:3000/api/oauth/token',
       {
         method: 'POST',
         headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded'}),
         body: loginInfo
       }).then(response => response.json())
-      .then(function (data) {
+      .then((data) => {
           let token = JSON.parse(JSON.stringify(data))['access_token'];
-          localStorage.setItem('token', token);
+          if (token) {
+            localStorage.setItem('token', token);
+            this.props.history.push('/tasks')
+          } else {
+            let errors = {};
+            errors['error'] = data.message;
+            this.setState({errors: errors});
+          }
         }
-      ).then(() => this.props.history.push('/tasks'))
-
-    // axios.post(`http://localhost:3000/oauth/token`, loginInfo,  {'Content-Type': 'application/x-www-form-urlencoded'})
-    //   .then(res => {
-    //     console.log(res);
-    //     console.log(res.data);
-    //   })
-
+      )
   };
 
   render() {
     return (
-      <div>
-        <form>
-
-          <label htmlFor='email'>Email</label> <br/>
-          <input type="email" id="email" name="email" onChange={this.handleChange}/>
-          <br/>
-
-          <label htmlFor='password'>Password</label> <br/>
-          <input type="password" id="password" name="password" onChange={this.handleChange}/>
-          <br/>
-          {/*<button onClick={this.handleSubmit}>*/}
-          {/*<Link to="/Tasks">Sign in</Link>*/}
-          {/*</button>*/}
-          <Link to='/tasks'>
-            <button type="button" onClick={this.handleSubmit}>Sing in</button>
-          </Link>
-          <br/>
-          <Link to='/registration'>Registration</Link>
-        </form>
-      </div>
+      <Container className="w-25 my-5">
+        <Col>
+          <Card>
+            <CardBody>
+              <Form id='form'>
+                <FormGroup>
+                  <Label htmlFor='email'>Email</Label>
+                  <Input type="email" id="email" name="email" onChange={this.handleChange}/>
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor='password'>Password</Label>
+                  <Input type="password" id="password" name="password" onChange={this.handleChange}/>
+                </FormGroup>
+                <div className="text-center">
+                  <Link to='/tasks'>
+                    <Button type="button" color="success" onClick={this.handleSubmit}>Sing in</Button>
+                  </Link>
+                  <div className='text-danger text-center'>{this.state.errors['error']}</div>
+                </div>
+                <hr/>
+                <div className="text-center">
+                  <Link to='/registration'>Registration</Link>
+                </div>
+              </Form>
+            </CardBody>
+          </Card>
+        </Col>
+      </Container>
     )
   }
 }
-
-// Signin.propTypes = {
-//   history: PropTypes.string.isRequired
-// };
 
 export default Signin

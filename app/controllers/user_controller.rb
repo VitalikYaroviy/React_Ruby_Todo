@@ -18,12 +18,22 @@ class UserController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      session[:user_id] = @user.id
-      render json: { message: 'User created successfully' },
-             status: :ok
+      UserMailer.registration_confirmation(@user).deliver
+      if @user.email_confirmed
+        session[:user_id] = @user.id
+        render json: @user,
+               status: :ok
+      end
     else
-      render json: { errors: @user.errors.full_messages },
+      render json: {errors: @user.errors.full_messages},
              status: :unprocessed_entity
+    end
+  end
+
+  def confirm_email
+    user = User.find_by_confirm_token(params[:id])
+    if user.confirm_token
+      user.email_activate
     end
   end
 
