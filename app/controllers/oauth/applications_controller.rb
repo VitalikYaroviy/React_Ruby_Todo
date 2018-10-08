@@ -1,5 +1,5 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
-  before_filter :authenticate_user! # use before_action instead if on Rails 5.1+
+  before_action :authenticate_user! # use before_action instead if on Rails 5.1+
 
   def index
     @applications = current_user.oauth_applications
