@@ -3,13 +3,9 @@ class User < ApplicationRecord
   has_secure_password
   before_create :confirmation_token
   validates :email, presence: true
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant",
-           foreign_key: :resource_owner_id,
-           dependent: :delete_all # or :destroy if you need callbacks
+  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, dependent: :delete_all
 
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken",
-           foreign_key: :resource_owner_id,
-           dependent: :delete_all # or :destroy if you need callbacks
+  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, dependent: :delete_all
   has_many :tasks
 
   def email_activate
@@ -21,8 +17,6 @@ class User < ApplicationRecord
   private
 
   def confirmation_token
-    if self.confirm_token.blank?
-      self.confirm_token = SecureRandom.base64.to_s
-    end
+    self.confirm_token = SecureRandom.base64.to_s if self.confirm_token.blank?
   end
 end

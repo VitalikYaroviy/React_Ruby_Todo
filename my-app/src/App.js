@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import {BrowserRouter as Router, Route} from 'react-router-dom'
 import './App.css';
-import Signin from './component/Signin'
-import Registration from './component/Registration'
-import Tasks from './component/Tasks'
+import Signin from './component/Signin/Signin'
+import Registration from './component/Registration/Registration'
+import Tasks from './component/Task/Tasks'
 
 class App extends Component {
   render() {

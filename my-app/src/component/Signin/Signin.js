@@ -14,12 +14,11 @@ class Signin extends Component {
     };
   }
 
-
   handleChange = (e) => {
     this.setState({[e.target.name]: e.target.value});
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const loginInfo = `username=${this.state.email}&password=${this.state.password}&grant_type=password`;
     fetch('http://localhost:3000/api/oauth/token',
@@ -48,7 +47,7 @@ class Signin extends Component {
         <Col>
           <Card>
             <CardBody>
-              <Form id='form'>
+              <form className='signin'>
                 <FormGroup>
                   <Label htmlFor='email'>Email</Label>
                   <Input type="email" id="email" name="email" onChange={this.handleChange}/>
@@ -59,7 +58,7 @@ class Signin extends Component {
                 </FormGroup>
                 <div className="text-center">
                   <Link to='/tasks'>
-                    <Button type="button" color="success" onClick={this.handleSubmit}>Sing in</Button>
+                    <Button type="button" color="success" id='submit' onClick={this.handleSubmit}>Sing in</Button>
                   </Link>
                   <div className='text-danger text-center'>{this.state.errors['error']}</div>
                 </div>
@@ -67,7 +66,7 @@ class Signin extends Component {
                 <div className="text-center">
                   <Link to='/registration'>Registration</Link>
                 </div>
-              </Form>
+              </form>
             </CardBody>
           </Card>
         </Col>

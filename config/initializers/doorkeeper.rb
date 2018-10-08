@@ -7,17 +7,15 @@ Doorkeeper.configure do
     # User.find_by_id session[:user_id] || warden.authenticate!(:scope => :user)
   end
 
-  resource_owner_from_credentials do |routes|
+  resource_owner_from_credentials do
     user = User.find_by(email: params[:username])
-    if (user.email_confirmed)
-      user.authenticate(params[:password]) || nil
-    end
+    (user.authenticate(params[:password]) || nil) if user.email_confirmed
   end
 
-  default_scopes  :public
+  default_scopes :public
   optional_scopes :write
 
-  skip_authorization do |resource_owner, client|
+  skip_authorization do
     true
   end
 
@@ -41,9 +39,9 @@ Doorkeeper.configure do
   #   end
   # end
 
-    # If you are planning to use Doorkeeper in Rails 5 API-only application, then you might
-    # want to use API mode that will skip all the views management and change the way how
-    # Doorkeeper responds to a requests.
+  # If you are planning to use Doorkeeper in Rails 5 API-only application, then you might
+  # want to use API mode that will skip all the views management and change the way how
+  # Doorkeeper responds to a requests.
   #
   api_only
 

@@ -15,25 +15,57 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
+    "enzyme-adapter-react-15": "^1.1.0",
+    "enzyme-adapter-react-16": "^1.5.0",
+    "fetch-mock": "^7.0.6",
+    "history": "^4.7.2",
+    "json-server": "^0.14.0",
     "jwt-decode": "^2.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-inline-editable-field": "^1.0.6",
     "react-inline-editing": "^1.0.10",
     "react-numeric-input": "^2.2.3",
+    "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
     "reactstrap": "^6.4.0",
-    "redux-rest-resource": "^0.19.2"
+    "redux-rest-resource": "^0.19.2",
+    "regenerator-runtime": "^0.12.1"
   },
   "scripts": {
     "start": "PORT=4000 react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "babel-jest": "^23.6.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "enzyme": "^3.6.0",
+    "jest": "^23.6.0",
+    "jest-fetch-mock": "^1.6.6",
     "react-edit-inline": "^1.0.8",
+    "react-test-renderer": "^16.5.2",
     "riek": "^1.1.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|scss)$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "moduleDirectories": [
+      "node_modules",
+      "app/javascript"
+    ],
+    "automock": false,
+    "setupFiles": [
+      "./setupJest.js"
+    ]
   }
 }
