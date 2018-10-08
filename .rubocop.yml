@@ -1,0 +1,191 @@
+Style/SymbolArray:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/MixinUsage:
+  Enabled: false
+
+Style/StderrPuts:
+  Enabled: false
+
+Style/ExpandPathArguments:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Layout/SpaceBeforeBlockBraces:
+ Enabled: false
+
+Lint/UselessAssignment:
+  Enabled: false
+
+Style/LineEndConcatenation:
+  Enabled: false
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/IndentHash:
+  Enabled: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Performance/StringReplacement:
+  Enabled: false
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: false
+
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/WordArray:
+  Enabled: false
+
+Layout/EmptyLines:
+  Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+Style/PreferredHashMethods:
+  Enabled: false
+
+Gemspec/OrderedDependencies:
+  Enabled: false
+
+Style/Encoding:
+  Enabled: false
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+Layout/SpaceInsideStringInterpolation:
+  Enabled: false
+
+Lint/HandleExceptions:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Layout/MultilineOperationIndentation:
+  Enabled: false
+
+Naming/VariableName:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Style/AndOr:
+  Enabled: false
+
+Style/Not:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Enabled: false
+
+Layout/AlignParameters:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Layout/ExtraSpacing:
+  Enabled: false
+
+Layout/SpaceBeforeFirstArg:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Performance/RegexpMatch:
+  Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Layout/SpaceInsideParens:
+  Enabled: false
+
+Lint/DeprecatedClassMethods:
+  Enabled: false
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false
+
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+Style/BracesAroundHashParameters:
+  Enabled: false
+
+Style/Next:
+  Enabled: false
+
+Performance/RedundantBlockCall:
+  Enabled: false
+
+Layout/TrailingWhitespace:
+  Enabled: false
+
+Naming/FileName:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
+Style/RedundantParentheses:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  Enabled: false

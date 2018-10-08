@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
-import Signin from "./Signin";
 import {Link} from 'react-router-dom';
-import PropTypes from 'prop-types';
-import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col} from 'reactstrap';
+import {Button, Form, FormGroup, Label, Input, Card, CardBody, Container, Col} from 'reactstrap';
 
 class Registration extends Component {
 
@@ -81,7 +79,7 @@ class Registration extends Component {
         <Col>
           <Card>
             <CardBody>
-              <Form>
+              <form className='registration'>
                 <FormGroup>
                   <Label htmlFor='name'>Name</Label>
                   <Input type="text" id="name" name="name" onChange={this.handleChange}/>
@@ -109,13 +107,13 @@ class Registration extends Component {
                   <div className='text-danger text-center'> {this.state.errors['password_confirmation']} </div>
                 </FormGroup>
                 <div className="text-center">
-                  <Button className="w-25" color="primary" onClick={this.sendData}>Add</Button>
+                  <Button className="w-25" color="primary" id='sendData' onClick={this.sendData}>Add</Button>
                 </div>
                 <hr/>
                 <div className="text-center">
                   <Link color="link" to='/'>Sing in</Link>
                 </div>
-              </Form>
+              </form>
             </CardBody>
           </Card>
         </Col>

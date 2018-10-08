@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import EditableLabel from 'react-inline-editing';
 import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col, Table} from 'reactstrap';
+import InlineEditable from "react-inline-editable-field";
+import {browserHistory} from 'react-router';
+
 
 class Tasks extends Component {
 
@@ -12,23 +15,26 @@ class Tasks extends Component {
       body: '',
       priority: '',
       date_task: '',
+      checked: false,
       tasks: [],
       value: '',
       errors: {}
     };
     this.clearLocal = this.clearLocal.bind(this);
     this.createTask = this.createTask.bind(this);
+    this.removeCheckTasks = this.removeCheckTasks.bind(this);
   }
 
   static contextTypes = {
-    router: PropTypes.object
+    history: PropTypes.object
   };
+
 
   handleChange = (e) => {
     this.setState({[e.target.name]: e.target.value});
   };
 
-  componentWillMount() {
+  componentDidMount() {
     let token = localStorage.getItem('token');
     (token === null) ? this.props.history.push('/') : true;
     fetch('http://localhost:3000/api/tasks',
@@ -39,11 +45,12 @@ class Tasks extends Component {
         }),
       }).then(response => response.json())
       .then((data) => this.setState({tasks: data}))
+
   }
 
   clearLocal() {
     localStorage.removeItem('token');
-    this.context.router.history.push(`/`)
+    this.props.history.push('/');
   }
 
   handleValidation = () => {
@@ -113,20 +120,8 @@ class Tasks extends Component {
       }).then(response => response.json())
   };
 
-  selectAllTasks = (e) => {
-    e.preventDefault();
-    let checkbox = document.querySelectorAll('input[name=select]');
-    for (let i = 0; i < checkbox.length; i++) {
-      checkbox[i].checked = true
-    }
-  };
-
-  uncheckAllTasks = (e) => {
-    e.preventDefault();
-    let checkbox = document.querySelectorAll('input[name=select]');
-    for (let i = 0; i < checkbox.length; i++) {
-      checkbox[i].checked = false
-    }
+  toggleChange = () => {
+    this.setState({checked: !this.state.checked});
   };
 
   removeCheckTasks = (e) => {
@@ -175,8 +170,8 @@ class Tasks extends Component {
     }
   };
 
-  _handleFocusOut = (item) => (text) => {
-    item.title = text;
+  updateListing(item, val) {
+    item.title = val;
     fetch(`http://localhost:3000/api/tasks/${item.id}`,
       {
         method: "PUT",
@@ -185,20 +180,20 @@ class Tasks extends Component {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         }),
-      }).then((response) => response.json())
-  };
+      }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+  }
 
   render() {
     return (
       <div>
 
         <div className='w-100'>
-          <Button className='float-right mr-5' onClick={this.clearLocal}>Exit</Button>
+          <Button className='float-right mr-5' id='exit' onClick={this.clearLocal}>Exit</Button>
         </div>
 
         <div className='d-flex w-25 my-5'>
-          <Button className='mx-3' color="primary" onClick={this.selectAllTasks}>Select all</Button>
-          <Button className='mx-3' color="primary" onClick={this.uncheckAllTasks}>Uncheck all</Button>
+          <Button className='mx-3' id='selectAll' color="primary" onClick={this.toggleChange}>Select all</Button>
+          <Button className='mx-3' id='uncheckAll' color="primary" onClick={this.toggleChange}>Uncheck all</Button>
           <Button className='mx-3' color="warning" onClick={this.removeCheckTasks}>Remove all</Button>
         </div>
 
@@ -207,7 +202,7 @@ class Tasks extends Component {
 
           <div className='w-75 mx-5'>
             <h3>Active</h3>
-            <Table hover className='my-5'>
+            <Table hover={true} className='my-5'>
               <thead>
               <tr className='text-center'>
                 <th>Active</th>
@@ -219,24 +214,26 @@ class Tasks extends Component {
               </tr>
               </thead>
               <tbody id="tbody" className='active'>
-              {(this.state.tasks.length) ? this.state.tasks.sort((a, b) => b.id - a.id).map((item, i) => (
-
-                (item.status === 0) ?
-                  <tr key={i} className='text-center'>
-                    <td><Input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
+              {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => {
+                return (item.status === 0) ?
+                  <tr key={i} className='text-center tr-active'>
+                    <td><input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
                     <td>
-                      <EditableLabel text={item.title} onFocusOut={this._handleFocusOut(item)}/>
+                      <InlineEditable content={item.title} inputType="input" onBlur={(val) => {
+                        this.updateListing(item, val)
+                      }}/>
                     </td>
                     <td>{item.priority}</td>
                     <td>{item.date_task}</td>
-                    <td><Input id={item.id} name="select" type='checkbox'/></td>
-                    <td><Button color="danger" onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
+                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><Button color="danger" id={`task_${item.id}`}
+                                onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
-              )) : false}
+              }) : false}
               </tbody>
             </Table>
             <h3>Finish</h3>
-            <Table hover className='my-5'>
+            <Table hover={true} className='my-5'>
               <thead>
               <tr className='text-center'>
                 <th>Active</th>
@@ -248,16 +245,19 @@ class Tasks extends Component {
               </tr>
               </thead>
               <tbody id="tbody" className='finish'>
-              {(this.state.tasks.length) ? this.state.tasks.sort((a, b) => b.id - a.id).map((item, i) => (
+              {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => (
                 (item.status === 1) ?
-                  <tr key={i} className='text-center'>
+                  <tr key={i} className='text-center tr-finish'>
                     <td><Input type='checkbox' id={item.id} checked='checked' name="status"
                                onChange={this.changeTask(item)}/></td>
-                    <td><EditableLabel text={item.title} onFocusOut={this._handleFocusOut(item)}/></td>
+                    <td><InlineEditable content={item.title} inputType="input" onBlur={(val) => {
+                      this.updateListing(item, val)
+                    }}/></td>
                     <td className="description">{item.priority}</td>
                     <td className="description">{item.date_task}</td>
-                    <td><Input id={item.id} name="select" type='checkbox'/></td>
-                    <td><Button color="danger" onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
+                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><Button color="danger" id={item.id}
+                                onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
               )) : false}
               </tbody>
@@ -292,14 +292,13 @@ class Tasks extends Component {
                       <div className='text-danger text-center'> {this.state.errors['date_task']} </div>
                     </FormGroup>
                     <div className='text-center'>
-                      <Button className='w-50' color="success" onClick={this.createTask}>Add</Button>
+                      <button className='w-50' color="success" id='but-create' onClick={this.createTask}>Add</button>
                     </div>
                   </Form>
                 </CardBody>
               </Card>
             </Col>
           </Container>
-
         </div>
       </div>
     )
