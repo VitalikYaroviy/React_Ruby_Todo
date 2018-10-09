@@ -19,7 +19,6 @@ class Registration extends Component {
 
   handleChange = (e) => {
     this.setState({[e.target.name]: e.target.value});
-    console.log()
   };
 
   handleValidation = () => {
@@ -65,7 +64,7 @@ class Registration extends Component {
         password: this.state.password
       };
       const par = JSON.stringify(user);
-      fetch('http://localhost:3000/api/user',
+      fetch('https://thawing-eyrie-58542.herokuapp.com/api/user',
         {
           method: "POST",
           type: 'application/json',
