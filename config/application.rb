@@ -34,12 +34,12 @@ module ListApp
     config.api_only = true
     config.generators.system_tests = nil
 
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins 'localhost:4000/'
-        resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
-      end
-    end
+    # config.middleware.insert_before 0, Rack::Cors do
+    #   allow do
+    #     origins 'localhost:4000/'
+    #     resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
+    #   end
+    # end
 
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', 'local_env.yml')
