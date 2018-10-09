@@ -15,7 +15,8 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default_url_options = { host: 'thawing-eyrie-58542.herokuapp.com', protocol: 'https' }
+  config.action_mailer.default_url_options = { :host => 'thawing-eyrie-58542.herokuapp.com' }
+  #config.action_mailer.default_url_options = { host: 'thawing-eyrie-58542.herokuapp.com', protocol: 'https' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       user_name: ENV["MAIL_USERNAME"],
