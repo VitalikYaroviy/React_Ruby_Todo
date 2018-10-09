@@ -64,7 +64,7 @@ class Registration extends Component {
         password: this.state.password
       };
       const par = JSON.stringify(user);
-      fetch('https://thawing-eyrie-58542.herokuapp.com/api/user',
+      fetch('http://localhost:3000/api/user',
         {
           method: "POST",
           type: 'application/json',
