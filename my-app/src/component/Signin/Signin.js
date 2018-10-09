@@ -21,7 +21,7 @@ class Signin extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const loginInfo = `username=${this.state.email}&password=${this.state.password}&grant_type=password`;
-    fetch('http://localhost:3000/api/oauth/token',
+    fetch('/api/oauth/token',
       {
         method: 'POST',
         headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded'}),

@@ -37,7 +37,7 @@ class Tasks extends Component {
   componentDidMount() {
     let token = localStorage.getItem('token');
     (token === null) ? this.props.history.push('/') : true;
-    fetch('http://localhost:3000/api/tasks',
+    fetch('/api/tasks',
       {
         method: "GET",
         headers: new Headers({
@@ -91,7 +91,7 @@ class Tasks extends Component {
         priority: this.state.priority,
         date_task: this.state.date_task
       };
-      fetch('http://localhost:3000/api/tasks',
+      fetch('/api/tasks',
         {
           method: "POST",
           body: JSON.stringify(task),
@@ -111,7 +111,7 @@ class Tasks extends Component {
     const rows = [...this.state.tasks];
     rows.splice(i, 1);
     this.setState({tasks: rows});
-    fetch(`http://localhost:3000/api/tasks/${item.id}`,
+    fetch(`/api/tasks/${item.id}`,
       {
         method: "DELETE",
         headers: new Headers({
@@ -131,7 +131,7 @@ class Tasks extends Component {
     for (let i = 0; i < checkedBoxes.length; i++) {
       listTask.push(checkedBoxes[i].id)
     }
-    fetch('http://localhost:3000/api/destroy_multiple',
+    fetch('/api/destroy_multiple',
       {
         method: "DELETE",
         body: JSON.stringify({ids: listTask}),
@@ -146,7 +146,7 @@ class Tasks extends Component {
   changeTask = (task) => (e) => {
     if (e.target.checked) {
       task.status = 1;
-      fetch(`http://localhost:3000/api/tasks/${task.id}`,
+      fetch(`/api/tasks/${task.id}`,
         {
           method: "PUT",
           body: JSON.stringify(task),
@@ -158,7 +158,7 @@ class Tasks extends Component {
     } else {
       task.status = 0;
 
-      fetch(`http://localhost:3000/api/tasks/${task.id}`,
+      fetch(`/api/tasks/${task.id}`,
         {
           method: "PUT",
           body: JSON.stringify(task),
@@ -172,7 +172,7 @@ class Tasks extends Component {
 
   updateListing(item, val) {
     item.title = val;
-    fetch(`http://localhost:3000/api/tasks/${item.id}`,
+    fetch(`/api/tasks/${item.id}`,
       {
         method: "PUT",
         body: JSON.stringify(item),
