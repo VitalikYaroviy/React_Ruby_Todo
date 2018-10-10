@@ -19,8 +19,8 @@ Rails.application.configure do
   #config.action_mailer.default_url_options = { host: 'thawing-eyrie-58542.herokuapp.com', protocol: 'https' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-      user_name: 'testEmail.Vitalik97',
-      password: 'testVitalik97',
+      user_name: ENV['MAIL_USERNAME'],
+      password: ENV['MAIL_PASSWORD'],
       domain: 'heroku.com',
       address: 'smtp.gmail.com',
       port: '587',
