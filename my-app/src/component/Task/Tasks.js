@@ -23,6 +23,7 @@ class Tasks extends Component {
     this.clearLocal = this.clearLocal.bind(this);
     this.createTask = this.createTask.bind(this);
     this.removeCheckTasks = this.removeCheckTasks.bind(this);
+    this.bla = this.bla.bind(this);
   }
 
   static contextTypes = {
@@ -181,6 +182,9 @@ class Tasks extends Component {
           'Content-Type': 'application/json'
         }),
       }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+  }
+  bla = () => {
+    console.log(this)
   }
 
   render() {
