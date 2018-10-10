@@ -7,18 +7,17 @@ class UserController < ApplicationController
       UserMailer.registration_confirmation(@user).deliver
       if @user.email_confirmed
         session[:user_id] = @user.id
-        render json: @user,
-               status: :ok
+        render json: @user, status: :ok
       end
     else
-      render json: {errors: @user.errors.full_messages},
-             status: :unprocessed_entity
+      render json: {errors: @user.errors.full_messages}, status: :unprocessed_entity
     end
   end
 
   def confirm_email
     user = User.find_by_confirm_token(params[:id])
     user.email_activate if user.confirm_token
+    redirect_to 'https://thawing-eyrie-58542.herokuapp.com/?' + 'confirm_email=true'
   end
 
   private

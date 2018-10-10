@@ -11,7 +11,14 @@ class Signin extends Component {
       email: '',
       password: '',
       errors: {},
+      message: ''
     };
+  }
+
+  componentDidMount() {
+    if (this.props.location.pathname.includes("confirm_email=true")) {
+      this.setState({message:'Your account has now been confirmed'})
+    }
   }
 
   handleChange = (e) => {
@@ -66,6 +73,7 @@ class Signin extends Component {
                 <div className="text-center">
                   <Link to='/registration'>Registration</Link>
                 </div>
+                <div className='text-success text-center'>{this.state.message}</div>
               </form>
             </CardBody>
           </Card>
