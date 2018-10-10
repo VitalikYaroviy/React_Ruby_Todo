@@ -16,12 +16,12 @@ class Signin extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.pathname.includes("confirm_email=true")) {
+    if (window.location.href.includes("confirm_email=true")) {
       this.setState({message:'Your account has now been confirmed'})
     } else {
       console.log(this.props.location.pathname)
       console.log(window.location.href)
-      console.log(this.props.location.pathname.includes("confirm_email=true"))
+      console.log(window.location.href.includes("confirm_email=true"))
     }
   }
 
