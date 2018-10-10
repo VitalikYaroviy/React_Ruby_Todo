@@ -18,6 +18,8 @@ class Signin extends Component {
   componentDidMount() {
     if (this.props.location.pathname.includes("confirm_email=true")) {
       this.setState({message:'Your account has now been confirmed'})
+    } else {
+      console.log('error=(')
     }
   }
 
