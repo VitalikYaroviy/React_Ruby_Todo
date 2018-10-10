@@ -11,7 +11,8 @@ class Signin extends Component {
       email: '',
       password: '',
       errors: {},
-      message: ''
+      message: '',
+      display: 'block'
     };
   }
 
@@ -19,6 +20,9 @@ class Signin extends Component {
     if (window.location.href.includes("confirm_email=true")) {
       this.setState({message:'Your account has now been confirmed'})
     }
+    setTimeout(() => {
+      this.setState({display: 'none'})
+    }, 3000)
   }
 
   handleChange = (e) => {
@@ -50,6 +54,10 @@ class Signin extends Component {
 
   render() {
     return (
+      <div>
+      <div id='popup' className="w-100 text-center align-middle mb-3 bg-success text-white" style={{ height: 50, display: this.state.display }}>
+        <h3 className='pt-2'>{this.state.message}</h3>
+      </div>
       <Container className="w-25 my-5">
         <Col>
           <Card>
@@ -73,12 +81,12 @@ class Signin extends Component {
                 <div className="text-center">
                   <Link to='/registration'>Registration</Link>
                 </div>
-                <div className='text-success text-center'>{this.state.message}</div>
               </form>
             </CardBody>
           </Card>
         </Col>
       </Container>
+      </div>
     )
   }
 }
