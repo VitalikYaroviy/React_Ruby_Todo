@@ -18,7 +18,9 @@ class Tasks extends Component {
       checked: false,
       tasks: [],
       value: '',
-      errors: {}
+      errors: {},
+      message_remove: '',
+      display: 'block'
     };
     this.clearLocal = this.clearLocal.bind(this);
     this.createTask = this.createTask.bind(this);
@@ -117,7 +119,10 @@ class Tasks extends Component {
         headers: new Headers({
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }),
-      }).then(response => response.json())
+      }).then(response => response.json()).then(() => this.setState({message_remove: 'Your task has been remove'}))
+    setTimeout(() => {
+      this.setState({display: 'none'})
+    }, 2000)
   };
 
   toggleChange = () => {
@@ -186,6 +191,8 @@ class Tasks extends Component {
   render() {
     return (
       <div>
+        {this.state.message_remove ? <div id='popup' className="w-100 text-center align-middle mb-3 pt-3 bg-warning text-white" style={{height: 50, display: this.state.display}}>
+          {this.state.message_remove}</div> : false}
 
         <div className='w-100'>
           <Button className='float-right mr-5' id='exit' onClick={this.clearLocal}>Exit</Button>
