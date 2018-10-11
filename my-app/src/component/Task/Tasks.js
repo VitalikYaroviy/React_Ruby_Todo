@@ -205,11 +205,11 @@ class Tasks extends Component {
             <Table hover={true} className='my-5'>
               <thead>
               <tr className='text-center'>
-                <th>Active</th>
+                <th>Select</th>
                 <th>Title</th>
                 <th>Priority</th>
                 <th>Date</th>
-                <th>Select</th>
+                <th>Complete</th>
                 <th>Setup</th>
               </tr>
               </thead>
@@ -217,7 +217,7 @@ class Tasks extends Component {
               {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => {
                 return (item.status === 0) ?
                   <tr key={i} className='text-center tr-active'>
-                    <td><input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
+                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
                     <td>
                       <InlineEditable content={item.title} inputType="input" onBlur={(val) => {
                         this.updateListing(item, val)
@@ -225,7 +225,7 @@ class Tasks extends Component {
                     </td>
                     <td>{item.priority}</td>
                     <td>{item.date_task}</td>
-                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
                     <td><Button color="danger" id={`task_${item.id}`}
                                 onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
@@ -236,11 +236,11 @@ class Tasks extends Component {
             <Table hover={true} className='my-5'>
               <thead>
               <tr className='text-center'>
-                <th>Active</th>
+                <th>Select</th>
                 <th>Title</th>
                 <th>Priority</th>
                 <th>Date</th>
-                <th>Select</th>
+                <th>Restore</th>
                 <th>Setup</th>
               </tr>
               </thead>
@@ -248,14 +248,13 @@ class Tasks extends Component {
               {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => (
                 (item.status === 1) ?
                   <tr key={i} className='text-center tr-finish'>
-                    <td><Input type='checkbox' id={item.id} checked='checked' name="status"
-                               onChange={this.changeTask(item)}/></td>
+                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
                     <td><InlineEditable content={item.title} inputType="input" onBlur={(val) => {
                       this.updateListing(item, val)
                     }}/></td>
                     <td className="description">{item.priority}</td>
                     <td className="description">{item.date_task}</td>
-                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><Input type='checkbox' id={item.id} checked='checked' name="status" onChange={this.changeTask(item)}/></td>
                     <td><Button color="danger" id={item.id}
                                 onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
