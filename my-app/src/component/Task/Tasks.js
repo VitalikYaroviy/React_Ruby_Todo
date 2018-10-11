@@ -209,7 +209,7 @@ class Tasks extends Component {
                 <th>Title</th>
                 <th>Priority</th>
                 <th>Date</th>
-                <th>Completed</th>
+                <th>Complete</th>
                 <th>Setup</th>
               </tr>
               </thead>
@@ -240,7 +240,7 @@ class Tasks extends Component {
                 <th>Title</th>
                 <th>Priority</th>
                 <th>Date</th>
-                <th>Return</th>
+                <th>Restore</th>
                 <th>Setup</th>
               </tr>
               </thead>
