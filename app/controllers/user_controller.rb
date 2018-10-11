@@ -5,11 +5,6 @@ class UserController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       UserMailer.registration_confirmation(@user).deliver
-      if @user.email_confirmed
-        session[:user_id] = @user.id
-        render json: @user,
-               status: :ok
-      end
     else
       render json: {errors: @user.errors.full_messages},
              status: :unprocessed_entity
