@@ -15,9 +15,9 @@ class UserController < ApplicationController
   end
 
   def confirm_email
-    user = User.find_by_confirm_token(params[:id])
+    user = User.find(params[:id])
     user.email_activate if user.confirm_token
-    redirect_to 'https://thawing-eyrie-58542.herokuapp.com/?' + 'confirm_email=true'
+    render status: :ok
   end
 
   private

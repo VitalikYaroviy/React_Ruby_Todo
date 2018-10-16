@@ -17,7 +17,7 @@ class Signin extends Component {
   }
 
   componentDidMount() {
-    if (window.location.href.includes("confirm_email=true")) {
+    if (window.location.href.includes("true")) {
       this.setState({message: 'Your account has now been confirmed'})
     }
     setTimeout(() => {
