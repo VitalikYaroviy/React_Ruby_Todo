@@ -4,7 +4,8 @@ class UserController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      UserMailer.registration_confirmation(@user).deliver
+      @origin = request.headers['host']
+      UserMailer.registration_confirmation(@user, @origin).deliver
       if @user.email_confirmed
         session[:user_id] = @user.id
         render json: @user, status: :ok
