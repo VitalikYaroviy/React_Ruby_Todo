@@ -35,3 +35,13 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.save {
+  display: none;
+}
+.save:focus {outline:0;}
+
+.cancel {
+  display: none;
+}
+.cancel:focus {outline:0;}
