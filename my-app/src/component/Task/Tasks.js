@@ -4,6 +4,8 @@ import EditableLabel from 'react-inline-editing';
 import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col, Table} from 'reactstrap';
 import InlineEditable from "react-inline-editable-field";
 import {browserHistory} from 'react-router';
+import {confirmAlert} from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 
 class Tasks extends Component {
@@ -113,14 +115,29 @@ class Tasks extends Component {
   };
 
   handleRemoveSpecificRow = (i, item) => () => {
-    fetch(`/api/tasks/${item.id}`,
-      {
-        method: "DELETE",
-        headers: new Headers({
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }),
-      }).then(() => { const tasks = this.state.tasks.filter(task => task.id !== item.id);
+    confirmAlert({
+      title: 'Remove this task',
+      message: 'Are you sure?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            const rows = [...this.state.tasks];
+            rows.splice(i, 1);
+            this.setState({tasks: rows});
+            fetch(`/api/tasks/${item.id}`,
+              {
+                method: "DELETE",
+                headers: new Headers({'Authorization': `Bearer ${localStorage.getItem('token')}`}),
+              }).then(() => { const tasks = this.state.tasks.filter(task => task.id !== item.id);
       this.setState({tasks})
+    })
+          }
+        },
+        {
+          label: 'No'
+        }
+      ]
     })
   };
 
@@ -191,6 +208,7 @@ class Tasks extends Component {
     })
   }
 
+
   render() {
     return (
       <div>
@@ -205,9 +223,7 @@ class Tasks extends Component {
           <Button className='mx-3' color="warning" onClick={this.removeCheckTasks}>Remove all</Button>
         </div>
 
-
         <div className='d-flex w-100'>
-
           <div className='w-75 mx-5'>
             <h3>Active</h3>
             <Table hover={true} className='my-5'>
