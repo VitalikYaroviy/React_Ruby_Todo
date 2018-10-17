@@ -101,7 +101,12 @@ class Tasks extends Component {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }),
-        }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+        }).then((response) => response.json()).then((data) => {
+        const tasks = [...this.state.tasks, data];
+        this.setState({tasks})
+      }).catch(error => {
+        console.log(error)
+      });
       let inputs = document.querySelectorAll("input[class='data form-control']");
       for (let i = 0; i < inputs.length; i++) {
         inputs[i].value = '';
@@ -124,7 +129,9 @@ class Tasks extends Component {
               {
                 method: "DELETE",
                 headers: new Headers({'Authorization': `Bearer ${localStorage.getItem('token')}`}),
-              }).then(response => response.json())
+              }).then(() => { const tasks = this.state.tasks.filter(task => task.id !== item.id);
+      this.setState({tasks})
+    })
           }
         },
         {
@@ -184,7 +191,7 @@ class Tasks extends Component {
     }
   };
 
-  updateListing(item, val) {
+  updateListing(item, val, index) {
     item.title = val;
     fetch(`/api/tasks/${item.id}`,
       {
@@ -194,7 +201,11 @@ class Tasks extends Component {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         }),
-      }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+      }).then((response) => response.json()).then((data) => {
+      const newTasks = this.state.tasks;
+      newTasks[index].title = data.title;
+      this.setState({tasks: newTasks})
+    })
   }
 
 
@@ -233,7 +244,7 @@ class Tasks extends Component {
                     <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
                     <td>
                       <InlineEditable content={item.title} inputType="input" onBlur={(val) => {
-                        this.updateListing(item, val)
+                        this.updateListing(item, val, i)
                       }}/>
                     </td>
                     <td>{item.priority}</td>
@@ -263,7 +274,7 @@ class Tasks extends Component {
                   <tr key={i} className='text-center tr-finish'>
                     <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
                     <td><InlineEditable content={item.title} inputType="input" onBlur={(val) => {
-                      this.updateListing(item, val)
+                      this.updateListing(item, val, i)
                     }}/></td>
                     <td className="description">{item.priority}</td>
                     <td className="description">{item.date_task}</td>
