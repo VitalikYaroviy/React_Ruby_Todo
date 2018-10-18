@@ -55,7 +55,8 @@ class Signin extends Component {
   render() {
     return (
       <div>
-        {this.state.message ? <div id='popup' className="w-100 text-center align-middle mb-3 bg-success text-white" style={{height: 50, display: this.state.display}}>
+        {this.state.message ? <div id='popup' className="w-100 text-center pt-3 bg-success text-white"
+                                   style={{height: 50, display: this.state.display}}>
           {this.state.message}</div> : false}
         <Container className="w-25 my-5">
           <Col>

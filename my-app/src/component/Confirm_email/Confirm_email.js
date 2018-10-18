@@ -24,7 +24,6 @@ class Confirm_email extends Component {
   render() {
     return (
       <div>
-        <h1>Hello, you confirmed your mail</h1>
       </div>
     )
   }
