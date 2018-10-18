@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import EditableLabel from 'react-inline-editing';
 import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col, Table} from 'reactstrap';
 import InlineEditable from "react-inline-editable-field";
-import InlineEdit from "react-inline-edit-input"
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 
 
@@ -174,27 +172,6 @@ class Tasks extends Component {
         }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
     }
   };
-
-  // updateListing(item, val, string) {
-  //   if (string === 'title') {
-  //     item.title = val;
-  //   } else if (string === 'date') {
-  //     debugger
-  //     item.date_task = val;
-  //   } else if (string === 'priority') {
-  //     item.priority = val;
-  //   }
-  //   fetch(`/api/tasks/${item.id}`,
-  //     {
-  //       method: "PUT",
-  //       body: JSON.stringify(item),
-  //       headers: new Headers({
-  //         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  //         'Content-Type': 'application/json'
-  //       }),
-  //     }).then((response) => response.json()).then((data) => this.setState({tasks:data}))
-  // }
-
 
   updateListing(item, val, index, string) {
     if (string === 'title') {
