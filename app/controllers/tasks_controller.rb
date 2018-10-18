@@ -33,10 +33,9 @@ class TasksController < ApplicationController
   end
 
   def update
-    @post = current_user.tasks.find(params[:id])
-    @posts = current_user.tasks
-    @post.update(task_params)
-    render json: @posts
+    @task = current_user.tasks.find(params[:id])
+    @task.update(task_params)
+    render json: @task, status: :ok
   end
 
   def destroy_multiple

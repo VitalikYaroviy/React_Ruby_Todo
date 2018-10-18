@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import EditableLabel from 'react-inline-editing';
 import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col, Table} from 'reactstrap';
 import InlineEditable from "react-inline-editable-field";
-import {browserHistory} from 'react-router';
 import InlineEdit from "react-inline-edit-input"
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+
+
+import 'react-day-picker/lib/style.css';
 
 
 class Tasks extends Component {
@@ -92,6 +95,7 @@ class Tasks extends Component {
         priority: this.state.priority,
         date_task: this.state.date_task
       };
+      debugger
       fetch('/api/tasks',
         {
           method: "POST",
@@ -171,7 +175,28 @@ class Tasks extends Component {
     }
   };
 
-  updateListing(item, val, string) {
+  // updateListing(item, val, string) {
+  //   if (string === 'title') {
+  //     item.title = val;
+  //   } else if (string === 'date') {
+  //     debugger
+  //     item.date_task = val;
+  //   } else if (string === 'priority') {
+  //     item.priority = val;
+  //   }
+  //   fetch(`/api/tasks/${item.id}`,
+  //     {
+  //       method: "PUT",
+  //       body: JSON.stringify(item),
+  //       headers: new Headers({
+  //         'Authorization': `Bearer ${localStorage.getItem('token')}`,
+  //         'Content-Type': 'application/json'
+  //       }),
+  //     }).then((response) => response.json()).then((data) => this.setState({tasks:data}))
+  // }
+
+
+  updateListing(item, val, index, string) {
     if (string === 'title') {
       item.title = val;
     } else if (string === 'date') {
@@ -187,7 +212,16 @@ class Tasks extends Component {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         }),
-      }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+      }).then((response) => response.json()).then((data) => {
+      const newTasks = this.state.tasks;
+      newTasks[index] = data;
+      this.setState({tasks: newTasks})
+    })
+  }
+
+  updateDate = (item, i, string) => (date) => {
+    let newDate = date.toISOString().slice(0, 10)
+    this.updateListing(item, newDate, i, string)
   }
 
   render() {
@@ -209,7 +243,7 @@ class Tasks extends Component {
 
           <div className='w-75 mx-5'>
             <h3>Active</h3>
-            <Table hover={true} className='my-5'>
+            <Table className='my-5'>
               <thead>
               <tr className='text-center'>
                 <th>Select</th>
@@ -226,13 +260,13 @@ class Tasks extends Component {
                   <tr key={i} className='text-center tr-active'>
                     <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
                     <td>
-                      <InlineEdit value={item.title} tag="span" type="text" saveLabel="Save" cancelLabel="Cancel" onSave={value => this.updateListing(item, value, 'title')}/>
+                      <InlineEditable content={item.title} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'title')}}/>
                     </td>
                     <td>
-                      <InlineEdit value={item.priority} tag="span" type="number" saveLabel="Save" cancelLabel="Cancel" onSave={value => this.updateListing(item, value, 'priority')}/>
+                      <InlineEditable content={item.priority} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'priority')}}/>
                     </td>
-                    <td>
-                      <InlineEdit value={item.date_task} tag="span" type="date" saveLabel="Save" cancelLabel="Cancel" onSave={value => this.updateListing(item, value, 'date')}/>
+                    <td style={{width: '10%'}}>
+                      <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item, i, 'date')} inputProps={{ style: { border: 'none', textAlign: 'center' } }} />
                     </td>
                     <td><input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
                     <td><Button color="danger" id={`task_${item.id}`} onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
@@ -241,7 +275,7 @@ class Tasks extends Component {
               </tbody>
             </Table>
             <h3>Finish</h3>
-            <Table hover={true} className='my-5'>
+            <Table className='my-5'>
               <thead>
               <tr className='text-center'>
                 <th>Select</th>
@@ -257,9 +291,15 @@ class Tasks extends Component {
                 (item.status === 1) ?
                   <tr key={i} className='text-center tr-finish'>
                     <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
-                    <td><InlineEdit value={item.title} tag="span" type="text" saveLabel="Save" cancelLabel="Cancel" onSave={value => this.updateListing(item, value, 'title')}/></td>
-                    <td className="description"><InlineEdit value={item.priority} tag="span" type="number" saveLabel="Save" cancelLabel="Cancel" onSave={value => this.updateListing(item, value, 'priority')}/></td>
-                    <td className="description"><InlineEdit value={item.date_task} tag="span" type="date" saveLabel="Save" cancelLabel="Cancel" onSave={value => this.updateListing(item, value, 'date')}/></td>
+                    <td className="description">
+                      <InlineEditable content={item.title} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'title')}}/>
+                    </td>
+                    <td className="description">
+                      <InlineEditable content={item.priority} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'priority')}}/>
+                    </td>
+                    <td className="description" style={{width: '10%'}} >
+                      <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item)} inputProps={{ style: { border: 'none', textAlign: 'center' } }} />
+                    </td>
                     <td><Input type='checkbox' id={item.id} checked='checked' name="status" onChange={this.changeTask(item)}/></td>
                     <td><Button color="danger" id={item.id} onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
