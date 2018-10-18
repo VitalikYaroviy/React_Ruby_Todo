@@ -12,14 +12,10 @@ class App extends Component {
   render() {
     return (
       <div>
-        <BrowserRouter>
-          <div>
             <Route exact path='/' component={Signin} />
             <Route path='/user/confirm_email/' component={Confirm_email}/>
             <Route path='/registration' component={Registration} />
             <Route path='/tasks' component={Tasks} />
-          </div>
-        </BrowserRouter>
       </div>
     );
   }
