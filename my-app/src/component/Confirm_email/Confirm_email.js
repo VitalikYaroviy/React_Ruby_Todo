@@ -16,16 +16,12 @@ class Confirm_email extends Component {
           headers: new Headers({
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }),
-        }).then(response => (response.statusText === 'OK') ? this.props.history.push('/?true') : false )
+        }).then(response => (response.statusText === 'OK') ? this.props.history.push('/?confirm_email=true') : false)
     }
   }
 
-
   render() {
-    return (
-      <div>
-      </div>
-    )
+    return (<div></div>)
   }
 }
 
