@@ -76,7 +76,7 @@ class Tasks extends Component {
 
     if (!this.state.date_task) {
       formIsValid = false;
-      errors['date_task'] = 'Date cannot be emty';
+      errors['date_task'] = 'Date cannot be empty';
     }
 
     this.setState({errors: errors});
@@ -93,7 +93,6 @@ class Tasks extends Component {
         priority: this.state.priority,
         date_task: this.state.date_task
       };
-      debugger
       fetch('/api/tasks',
         {
           method: "POST",
@@ -146,31 +145,25 @@ class Tasks extends Component {
       .then((data) => this.setState({tasks: data}))
   };
 
-  changeTask = (task) => (e) => {
+  changeTask = (task, index) => (e) => {
     if (e.target.checked) {
       task.status = 1;
-      fetch(`/api/tasks/${task.id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify(task),
-          headers: new Headers({
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }),
-        }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
     } else {
       task.status = 0;
-
-      fetch(`/api/tasks/${task.id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify(task),
-          headers: new Headers({
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          }),
-        }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
     }
+    fetch(`/api/tasks/${task.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(task),
+        headers: new Headers({
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }),
+      }).then((response) => response.json()).then((data) => {
+      const newTasks = this.state.tasks;
+      newTasks[index] = data;
+      this.setState({tasks: newTasks})
+    })
   };
 
   updateListing(item, val, index, string) {
@@ -197,9 +190,9 @@ class Tasks extends Component {
   }
 
   updateDate = (item, i, string) => (date) => {
-    let newDate = date.toISOString().slice(0, 10)
+    let newDate = date.toISOString().slice(0, 10);
     this.updateListing(item, newDate, i, string)
-  }
+  };
 
   render() {
     return (
@@ -214,7 +207,6 @@ class Tasks extends Component {
           <Button className='mx-3' id='uncheckAll' color="primary" onClick={this.toggleChange}>Uncheck all</Button>
           <Button className='mx-3' color="warning" onClick={this.removeCheckTasks}>Remove all</Button>
         </div>
-
 
         <div className='d-flex w-100'>
 
@@ -232,7 +224,7 @@ class Tasks extends Component {
               </tr>
               </thead>
               <tbody id="tbody" className='active'>
-              {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => {
+              {(this.state.tasks !== []) ? this.state.tasks.map((item, i) => {
                 return (item.status === 0) ?
                   <tr key={i} className='text-center tr-active'>
                     <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
@@ -245,7 +237,7 @@ class Tasks extends Component {
                     <td style={{width: '10%'}}>
                       <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item, i, 'date')} inputProps={{ style: { border: 'none', textAlign: 'center' } }} />
                     </td>
-                    <td><input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
+                    <td><input type='checkbox' name="status" onChange={this.changeTask(item, i)}/></td>
                     <td><Button color="danger" id={`task_${item.id}`} onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
               }) : false}
@@ -264,7 +256,7 @@ class Tasks extends Component {
               </tr>
               </thead>
               <tbody id="tbody" className='finish'>
-              {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => (
+              {(this.state.tasks !== []) ? this.state.tasks.map((item, i) => (
                 (item.status === 1) ?
                   <tr key={i} className='text-center tr-finish'>
                     <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
@@ -277,7 +269,7 @@ class Tasks extends Component {
                     <td className="description" style={{width: '10%'}} >
                       <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item)} inputProps={{ style: { border: 'none', textAlign: 'center' } }} />
                     </td>
-                    <td><Input type='checkbox' id={item.id} checked='checked' name="status" onChange={this.changeTask(item)}/></td>
+                    <td><Input type='checkbox' checked='checked' name="status" onChange={this.changeTask(item, i)}/></td>
                     <td><Button color="danger" id={item.id} onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
               )) : false}
