@@ -5,8 +5,7 @@ class TasksController < ApplicationController
 
   def index
     @tasks = current_user.tasks
-    # @task = Task.new
-    render json: @tasks
+    render json: @tasks, status: :ok
   end
 
   def show; end
@@ -18,18 +17,22 @@ class TasksController < ApplicationController
   def edit; end
 
   def create
-    @task = current_user.tasks.create(task_params)
-    respond_to do |format|
-      format.html {redirect_to tasks_path}
-      format.json {render :show, status: :created, location: @task}
+    @task = current_user.tasks.new(task_params)
+    if @task.save
+      render json: @task, status: :created
+    else
+      render json: @task.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @tasks = current_user.tasks
     @task = current_user.tasks.find(params[:id])
     @task.destroy
-    render json: @tasks
+    if @task.destroy
+      head :no_content, status: :ok
+    else
+      render json: @task.errors, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -40,7 +43,7 @@ class TasksController < ApplicationController
 
   def destroy_multiple
     Task.destroy(params[:ids])
-    render json: current_user.tasks
+    render json: current_user.tasks, status: :ok
   end
 
   def task_params

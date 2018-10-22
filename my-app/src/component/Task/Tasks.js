@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col, Table} from 'reactstrap';
 import InlineEditable from "react-inline-editable-field";
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-
-
 import 'react-day-picker/lib/style.css';
-
+import {browserHistory} from 'react-router';
+import {confirmAlert} from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 class Tasks extends Component {
 
@@ -101,7 +101,12 @@ class Tasks extends Component {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }),
-        }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+        }).then((response) => response.json()).then((data) => {
+        const tasks = [...this.state.tasks, data];
+        this.setState({tasks})
+      }).catch(error => {
+        console.log(error)
+      });
       let inputs = document.querySelectorAll("input[class='data form-control']");
       for (let i = 0; i < inputs.length; i++) {
         inputs[i].value = '';
@@ -110,16 +115,30 @@ class Tasks extends Component {
   };
 
   handleRemoveSpecificRow = (i, item) => () => {
-    const rows = [...this.state.tasks];
-    rows.splice(i, 1);
-    this.setState({tasks: rows});
-    fetch(`/api/tasks/${item.id}`,
-      {
-        method: "DELETE",
-        headers: new Headers({
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }),
-      }).then(response => response.json())
+    confirmAlert({
+      title: 'Remove this task',
+      message: 'Are you sure?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            const rows = [...this.state.tasks];
+            rows.splice(i, 1);
+            this.setState({tasks: rows});
+            fetch(`/api/tasks/${item.id}`,
+              {
+                method: "DELETE",
+                headers: new Headers({'Authorization': `Bearer ${localStorage.getItem('token')}`}),
+              }).then(() => { const tasks = this.state.tasks.filter(task => task.id !== item.id);
+      this.setState({tasks})
+    })
+          }
+        },
+        {
+          label: 'No'
+        }
+      ]
+    })
   };
 
   toggleChange = () => {
@@ -209,7 +228,6 @@ class Tasks extends Component {
         </div>
 
         <div className='d-flex w-100'>
-
           <div className='w-75 mx-5'>
             <h3>Active</h3>
             <Table className='my-5'>
