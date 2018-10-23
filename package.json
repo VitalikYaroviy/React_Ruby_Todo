@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "react": "^16.5.2",
+    "react-datepicker": "^1.7.0",
     "react-confirm-alert": "^2.0.6",
     "react-dom": "^16.5.2",
     "react-router": "^4.3.1",

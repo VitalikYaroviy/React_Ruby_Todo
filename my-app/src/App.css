@@ -26,10 +26,9 @@
   text-decoration: line-through;
 }
 
-.finish td div span {
+.finish td div input {
   text-decoration: line-through;
 }
-
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
