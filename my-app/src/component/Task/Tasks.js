@@ -4,6 +4,8 @@ import EditableLabel from 'react-inline-editing';
 import {Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, Container, Col, Table} from 'reactstrap';
 import InlineEditable from "react-inline-editable-field";
 import {browserHistory} from 'react-router';
+import {confirmAlert} from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 
 class Tasks extends Component {
@@ -99,7 +101,12 @@ class Tasks extends Component {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }),
-        }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+        }).then((response) => response.json()).then((data) => {
+        const tasks = [...this.state.tasks, data];
+        this.setState({tasks})
+      }).catch(error => {
+        console.log(error)
+      });
       let inputs = document.querySelectorAll("input[class='data form-control']");
       for (let i = 0; i < inputs.length; i++) {
         inputs[i].value = '';
@@ -108,16 +115,30 @@ class Tasks extends Component {
   };
 
   handleRemoveSpecificRow = (i, item) => () => {
-    const rows = [...this.state.tasks];
-    rows.splice(i, 1);
-    this.setState({tasks: rows});
-    fetch(`/api/tasks/${item.id}`,
-      {
-        method: "DELETE",
-        headers: new Headers({
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }),
-      }).then(response => response.json())
+    confirmAlert({
+      title: 'Remove this task',
+      message: 'Are you sure?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            const rows = [...this.state.tasks];
+            rows.splice(i, 1);
+            this.setState({tasks: rows});
+            fetch(`/api/tasks/${item.id}`,
+              {
+                method: "DELETE",
+                headers: new Headers({'Authorization': `Bearer ${localStorage.getItem('token')}`}),
+              }).then(() => { const tasks = this.state.tasks.filter(task => task.id !== item.id);
+      this.setState({tasks})
+    })
+          }
+        },
+        {
+          label: 'No'
+        }
+      ]
+    })
   };
 
   toggleChange = () => {
@@ -170,7 +191,7 @@ class Tasks extends Component {
     }
   };
 
-  updateListing(item, val) {
+  updateListing(item, val, index) {
     item.title = val;
     fetch(`/api/tasks/${item.id}`,
       {
@@ -180,8 +201,13 @@ class Tasks extends Component {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         }),
-      }).then((response) => response.json()).then((data) => this.setState({tasks: data}))
+      }).then((response) => response.json()).then((data) => {
+      const newTasks = this.state.tasks;
+      newTasks[index].title = data.title;
+      this.setState({tasks: newTasks})
+    })
   }
+
 
   render() {
     return (
@@ -197,19 +223,17 @@ class Tasks extends Component {
           <Button className='mx-3' color="warning" onClick={this.removeCheckTasks}>Remove all</Button>
         </div>
 
-
         <div className='d-flex w-100'>
-
           <div className='w-75 mx-5'>
             <h3>Active</h3>
             <Table hover={true} className='my-5'>
               <thead>
               <tr className='text-center'>
-                <th>Active</th>
+                <th>Select</th>
                 <th>Title</th>
                 <th>Priority</th>
                 <th>Date</th>
-                <th>Select</th>
+                <th>Complete</th>
                 <th>Setup</th>
               </tr>
               </thead>
@@ -217,15 +241,15 @@ class Tasks extends Component {
               {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => {
                 return (item.status === 0) ?
                   <tr key={i} className='text-center tr-active'>
-                    <td><input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
+                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
                     <td>
                       <InlineEditable content={item.title} inputType="input" onBlur={(val) => {
-                        this.updateListing(item, val)
+                        this.updateListing(item, val, i)
                       }}/>
                     </td>
                     <td>{item.priority}</td>
                     <td>{item.date_task}</td>
-                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><input type='checkbox' name="status" onChange={this.changeTask(item)}/></td>
                     <td><Button color="danger" id={`task_${item.id}`}
                                 onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
@@ -236,11 +260,11 @@ class Tasks extends Component {
             <Table hover={true} className='my-5'>
               <thead>
               <tr className='text-center'>
-                <th>Active</th>
+                <th>Select</th>
                 <th>Title</th>
                 <th>Priority</th>
                 <th>Date</th>
-                <th>Select</th>
+                <th>Restore</th>
                 <th>Setup</th>
               </tr>
               </thead>
@@ -248,14 +272,14 @@ class Tasks extends Component {
               {(this.state.tasks !== []) ? this.state.tasks.sort((a, b) => a.id - b.id).map((item, i) => (
                 (item.status === 1) ?
                   <tr key={i} className='text-center tr-finish'>
-                    <td><Input type='checkbox' id={item.id} checked='checked' name="status"
-                               onChange={this.changeTask(item)}/></td>
+                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
                     <td><InlineEditable content={item.title} inputType="input" onBlur={(val) => {
-                      this.updateListing(item, val)
+                      this.updateListing(item, val, i)
                     }}/></td>
                     <td className="description">{item.priority}</td>
                     <td className="description">{item.date_task}</td>
-                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><Input type='checkbox' id={item.id} checked='checked' name="status"
+                               onChange={this.changeTask(item)}/></td>
                     <td><Button color="danger" id={item.id}
                                 onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
                   </tr> : false
