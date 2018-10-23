@@ -20,7 +20,8 @@ class Tasks extends Component {
       checked: false,
       tasks: [],
       value: '',
-      errors: {}
+      errors: {},
+      type_sort: true
     };
     this.clearLocal = this.clearLocal.bind(this);
     this.createTask = this.createTask.bind(this);
@@ -213,6 +214,17 @@ class Tasks extends Component {
     this.updateListing(item, newDate, i, string)
   };
 
+  onSort(event, sortKey){
+    this.setState({type_sort:!this.state.type_sort});
+    const data = this.state.tasks;
+    if (this.state.type_sort) {
+      data.sort((a,b) => b[sortKey].localeCompare(a[sortKey]))
+    } else {
+      data.sort((a,b) => a[sortKey].localeCompare(b[sortKey]))
+    }
+    this.setState({data})
+  }
+
   render() {
     return (
       <div>
@@ -234,9 +246,9 @@ class Tasks extends Component {
               <thead>
               <tr className='text-center'>
                 <th>Select</th>
-                <th>Title</th>
+                <th onClick={e => this.onSort(e, 'title')}>Title</th>
                 <th>Priority</th>
-                <th>Date</th>
+                <th onClick={e => this.onSort(e, 'date_task')}>Date</th>
                 <th>Complete</th>
                 <th>Setup</th>
               </tr>
@@ -266,9 +278,9 @@ class Tasks extends Component {
               <thead>
               <tr className='text-center'>
                 <th>Select</th>
-                <th>Title</th>
+                <th  onClick={e => this.onSort(e, 'title')}>Title</th>
                 <th>Priority</th>
-                <th>Date</th>
+                <th onClick={e => this.onSort(e, 'date_task')}>Date</th>
                 <th>Restore</th>
                 <th>Setup</th>
               </tr>
