@@ -189,3 +189,9 @@ Style/RedundantParentheses:
 
 Lint/UnusedMethodArgument:
   Enabled: false
+
+Style/MultilineIfModifier:
+  Enabled: false
+
+Security/YAMLLoad:
+  Enabled: false

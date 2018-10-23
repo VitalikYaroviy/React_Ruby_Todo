@@ -11,7 +11,18 @@ class Signin extends Component {
       email: '',
       password: '',
       errors: {},
+      message: '',
+      display: 'flex'
     };
+  }
+
+  componentDidMount() {
+    if (window.location.href.includes("true")) {
+      this.setState({message: 'Your account has now been confirmed'})
+    }
+    setTimeout(() => {
+      this.setState({display: 'none'})
+    }, 3000)
   }
 
   handleChange = (e) => {
@@ -43,34 +54,38 @@ class Signin extends Component {
 
   render() {
     return (
-      <Container className="w-25 my-5">
-        <Col>
-          <Card>
-            <CardBody>
-              <form className='signin'>
-                <FormGroup>
-                  <Label htmlFor='email'>Email</Label>
-                  <Input type="email" id="email" name="email" onChange={this.handleChange}/>
-                </FormGroup>
-                <FormGroup>
-                  <Label htmlFor='password'>Password</Label>
-                  <Input type="password" id="password" name="password" onChange={this.handleChange}/>
-                </FormGroup>
-                <div className="text-center">
-                  <Link to='/tasks'>
-                    <Button type="button" color="success" id='submit' onClick={this.handleSubmit}>Sing in</Button>
-                  </Link>
-                  <div className='text-danger text-center'>{this.state.errors['error']}</div>
-                </div>
-                <hr/>
-                <div className="text-center">
-                  <Link to='/registration'>Registration</Link>
-                </div>
-              </form>
-            </CardBody>
-          </Card>
-        </Col>
-      </Container>
+      <div>
+        {this.state.message ? <div id='popup' className="w-100 d-flex justify-content-center align-items-center bg-success text-white" style={{height: 50, display: this.state.display}}>
+          {this.state.message}</div> : false}
+        <Container className="w-25 my-5">
+          <Col>
+            <Card>
+              <CardBody>
+                <form className='signin'>
+                  <FormGroup>
+                    <Label htmlFor='email'>Email</Label>
+                    <Input type="email" id="email" name="email" onChange={this.handleChange}/>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label htmlFor='password'>Password</Label>
+                    <Input type="password" id="password" name="password" onChange={this.handleChange}/>
+                  </FormGroup>
+                  <div className="text-center">
+                    <Link to='/tasks'>
+                      <Button type="button" color="success" id='submit' onClick={this.handleSubmit}>Sing in</Button>
+                    </Link>
+                    <div className='text-danger text-center'>{this.state.errors['error']}</div>
+                  </div>
+                  <hr/>
+                  <div className="text-center">
+                    <Link to='/registration'>Registration</Link>
+                  </div>
+                </form>
+              </CardBody>
+            </Card>
+          </Col>
+        </Container>
+      </div>
     )
   }
 }
