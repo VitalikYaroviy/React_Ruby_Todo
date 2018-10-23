@@ -7,6 +7,7 @@ import 'react-day-picker/lib/style.css';
 import {browserHistory} from 'react-router';
 import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import Checkbox from '../Checkbox/Checkbox'
 
 class Tasks extends Component {
 
@@ -223,7 +224,6 @@ class Tasks extends Component {
 
         <div className='d-flex w-25 my-5'>
           <Button className='mx-3' id='selectAll' color="primary" onClick={this.toggleChange}>Select all</Button>
-          <Button className='mx-3' id='uncheckAll' color="primary" onClick={this.toggleChange}>Uncheck all</Button>
           <Button className='mx-3' color="warning" onClick={this.removeCheckTasks}>Remove all</Button>
         </div>
 
@@ -245,7 +245,7 @@ class Tasks extends Component {
               {(this.state.tasks !== []) ? this.state.tasks.map((item, i) => {
                 return (item.status === 0) ?
                   <tr key={i} className='text-center tr-active'>
-                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><Checkbox id={item.id} status={this.state.checked}/></td>
                     <td>
                       <InlineEditable content={item.title} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'title')}}/>
                     </td>
@@ -277,7 +277,7 @@ class Tasks extends Component {
               {(this.state.tasks !== []) ? this.state.tasks.map((item, i) => (
                 (item.status === 1) ?
                   <tr key={i} className='text-center tr-finish'>
-                    <td><input name="select" type='checkbox' checked={this.state.checked}/></td>
+                    <td><Checkbox id={item.id} status={this.state.checked}/></td>
                     <td className="description">
                       <InlineEditable content={item.title} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'title')}}/>
                     </td>
