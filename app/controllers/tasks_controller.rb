@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  # before_action :doorkeeper_authorize!
+  before_action :doorkeeper_authorize!
   before_action :set_task, only: [:show, :edit]
   skip_before_action :verify_authenticity_token
 
