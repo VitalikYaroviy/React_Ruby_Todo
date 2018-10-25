@@ -36,16 +36,6 @@ describe('componentDidMount', () => {
   })
 });
 
-// describe('Select all and Uncheck all', () => {
-//   it('', () => {
-//     wrapper.find('#selectAll').simulate('click');
-//     let checkbox = wrapper.find('input[name="select"]');
-//     console.log(checkbox.length)
-//     expect(checkbox.first().props().checked).toEqual(true)
-//   })
-// });
-
-
 describe('handleValidation', () => {
   it('', () => {
     wrapper.find('#but-create').simulate('click', { preventDefault() {} });
