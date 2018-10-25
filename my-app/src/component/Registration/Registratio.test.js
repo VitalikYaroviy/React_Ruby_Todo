@@ -73,7 +73,7 @@ describe('Password input', () => {
 describe('Password input', () => {
 
   beforeAll(() => {
-    fetchMock.post('http://localhost:3000/api/user', 200);
+    fetchMock.post('/api/user', 200);
     wrapper.find('#sendData').simulate('click',{ preventDefault() {} });
     wrapper.update(<Registration />)
   })

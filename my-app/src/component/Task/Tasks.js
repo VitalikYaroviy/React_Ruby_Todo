@@ -5,7 +5,6 @@ import InlineEditable from "react-inline-editable-field";
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import {browserHistory} from 'react-router';
-import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import Checkbox from '../Checkbox/Checkbox'
 
@@ -117,29 +116,13 @@ class Tasks extends Component {
   };
 
   handleRemoveSpecificRow = (i, item) => () => {
-    confirmAlert({
-      title: 'Remove this task',
-      message: 'Are you sure?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => {
-            const rows = [...this.state.tasks];
-            rows.splice(i, 1);
-            this.setState({tasks: rows});
-            fetch(`/api/tasks/${item.id}`,
-              {
-                method: "DELETE",
-                headers: new Headers({'Authorization': `Bearer ${localStorage.getItem('token')}`}),
-              }).then(() => { const tasks = this.state.tasks.filter(task => task.id !== item.id);
-      this.setState({tasks})
-    })
-          }
-        },
-        {
-          label: 'No'
-        }
-      ]
+    fetch(`/api/tasks/${item.id}`,
+      {
+        method: "DELETE",
+        headers: new Headers({'Authorization': `Bearer ${localStorage.getItem('token')}`}),
+      }).then(() => {
+      const newTasks = this.state.tasks.filter(task => task.id !== item.id);
+      this.setState({tasks: newTasks})
     })
   };
 
@@ -215,13 +198,13 @@ class Tasks extends Component {
     this.updateListing(item, newDate, i, string)
   };
 
-  onSort(event, sortKey){
-    this.setState({type_sort:!this.state.type_sort});
+  onSort(event, sortKey) {
+    this.setState({type_sort: !this.state.type_sort});
     const data = this.state.tasks;
     if (this.state.type_sort) {
-      data.sort((a,b) => b[sortKey].localeCompare(a[sortKey]))
+      data.sort((a, b) => b[sortKey].localeCompare(a[sortKey]))
     } else {
-      data.sort((a,b) => a[sortKey].localeCompare(b[sortKey]))
+      data.sort((a, b) => a[sortKey].localeCompare(b[sortKey]))
     }
     this.setState({data})
   }
@@ -259,16 +242,25 @@ class Tasks extends Component {
                   <tr key={i} className='text-center tr-active'>
                     <td><Checkbox id={item.id} status={this.state.checked}/></td>
                     <td>
-                      <InlineEditable content={item.title} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'title')}}/>
+                      <InlineEditable content={item.title} inputType="input" onBlur={(val) => {
+                        this.updateListing(item, val, i, 'title')
+                      }}/>
                     </td>
                     <td>
-                      <InlineEditable content={item.priority} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'priority')}}/>
+                      <InlineEditable content={item.priority} inputType="input" onBlur={(val) => {
+                        this.updateListing(item, val, i, 'priority')
+                      }}/>
                     </td>
                     <td style={{width: '10%'}}>
-                      <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item, i, 'date')} inputProps={{ style: { border: 'none', textAlign: 'center' } }} />
+                      <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item, i, 'date')}
+                                      inputProps={{style: {border: 'none', textAlign: 'center'}}}/>
                     </td>
                     <td><input type='checkbox' name="status" onChange={this.changeTask(item, i)}/></td>
-                    <td><Button color="danger" id={`task_${item.id}`} onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
+                    <td><Button color="danger" id={`task_${item.id}`} onClick={() => {
+                      if (window.confirm('Delete the task?')) {
+                        this.handleRemoveSpecificRow(i, item)()
+                      }
+                    }}>Remove</Button></td>
                   </tr> : false
               }) : false}
               </tbody>
@@ -278,7 +270,7 @@ class Tasks extends Component {
               <thead>
               <tr className='text-center'>
                 <th>Select</th>
-                <th  onClick={e => this.onSort(e, 'title')}>Title</th>
+                <th onClick={e => this.onSort(e, 'title')}>Title</th>
                 <th>Priority</th>
                 <th onClick={e => this.onSort(e, 'date_task')}>Date</th>
                 <th>Restore</th>
@@ -291,16 +283,26 @@ class Tasks extends Component {
                   <tr key={i} className='text-center tr-finish'>
                     <td><Checkbox id={item.id} status={this.state.checked}/></td>
                     <td className="description">
-                      <InlineEditable content={item.title} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'title')}}/>
+                      <InlineEditable content={item.title} inputType="input" onBlur={(val) => {
+                        this.updateListing(item, val, i, 'title')
+                      }}/>
                     </td>
                     <td className="description">
-                      <InlineEditable content={item.priority} inputType="input" onBlur={(val) => {this.updateListing(item, val, i, 'priority')}}/>
+                      <InlineEditable content={item.priority} inputType="input" onBlur={(val) => {
+                        this.updateListing(item, val, i, 'priority')
+                      }}/>
                     </td>
-                    <td className="description" style={{width: '10%'}} >
-                      <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item)} inputProps={{ style: { border: 'none', textAlign: 'center' } }} />
+                    <td className="description" style={{width: '10%'}}>
+                      <DayPickerInput value={new Date(item.date_task)} onDayChange={this.updateDate(item)}
+                                      inputProps={{style: {border: 'none', textAlign: 'center'}}}/>
                     </td>
-                    <td><Input type='checkbox' checked='checked' name="status" onChange={this.changeTask(item, i)}/></td>
-                    <td><Button color="danger" id={item.id} onClick={this.handleRemoveSpecificRow(i, item)}>Remove</Button></td>
+                    <td><Input type='checkbox' checked='checked' name="status" onChange={this.changeTask(item, i)}/>
+                    </td>
+                    <td><Button color="danger" id={item.id} onClick={() => {
+                      if (window.confirm('Delete the task?')) {
+                        this.handleRemoveSpecificRow(i, item)()
+                      }
+                    }}>Remove</Button></td>
                   </tr> : false
               )) : false}
               </tbody>
@@ -331,7 +333,8 @@ class Tasks extends Component {
                     </FormGroup>
                     <FormGroup>
                       <p>Date</p>
-                      <Input type="date" id="date_task" name="date_task" className='data' onChange={this.handleChange}/>
+                      <Input type="date" id="date_task" name="date_task" className='data'
+                             onChange={this.handleChange}/>
                       <div className='text-danger text-center'> {this.state.errors['date_task']} </div>
                     </FormGroup>
                     <div className='text-center'>

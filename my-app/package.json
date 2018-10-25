@@ -57,7 +57,7 @@
     "jest": "^23.6.0",
     "jest-fetch-mock": "^1.6.6",
     "react-edit-inline": "^1.0.8",
-    "react-test-renderer": "^16.5.2",
+    "react-test-renderer": "^16.6.0",
     "riek": "^1.1.0"
   },
   "jest": {
@@ -66,7 +66,9 @@
     },
     "moduleDirectories": [
       "node_modules",
-      "app/javascript"
+      "<rootDir>/node_modules",
+      "app/javascript",
+      "src"
     ],
     "automock": false,
     "setupFiles": [
