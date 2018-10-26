@@ -4,8 +4,7 @@ class UserController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      @origin = request.headers['host']
-      UserMailer.registration_confirmation(@user, @origin).deliver
+      render status: :ok
     else
       render json: {errors: @user.errors.full_messages}, status: :unprocessed_entity
     end

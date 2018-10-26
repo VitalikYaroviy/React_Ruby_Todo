@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, dependent: :delete_all
   has_many :tasks
+  after_create :send_token_email
 
   def email_activate
     self.email_confirmed = true
@@ -19,4 +20,11 @@ class User < ApplicationRecord
   def confirmation_token
     self.confirm_token = SecureRandom.base64.to_s if self.confirm_token.blank?
   end
+
+  def send_token_email
+    @user = self
+    @origin = ORIGIN
+    UserMailer.registration_confirmation(@user, @origin).deliver
+  end
+
 end
