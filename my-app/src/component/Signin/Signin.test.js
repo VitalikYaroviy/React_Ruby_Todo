@@ -45,7 +45,7 @@ describe('Password input', () => {
 describe('Password input', () => {
 
   beforeAll(() => {
-    fetchMock.post('http://localhost:3000/api/oauth/token', {access_token: 'token'});
+    fetchMock.post('/api/oauth/token', {access_token: 'token'});
     wrapper.find('#submit').simulate('click', {preventDefault() {}});
     wrapper.update(<Signin/>)
   })

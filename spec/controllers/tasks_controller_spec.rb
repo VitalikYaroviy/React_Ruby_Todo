@@ -3,65 +3,92 @@ require 'spec_helper'
 
 RSpec.describe TasksController, type: :controller do
 
+  include_context :doorkeeper_app_with_token
+
   let(:user) { create(:user) }
   before do
     login_user(user)
   end
 
-  include_context :doorkeeper_app_with_token
+  let(:task) { create(:task, user: user) }
 
   let(:request_params) { { access_token: access_token.token } }
 
-  context 'action index' do
-    it 'returns tasks []' do
-      get :index, params: request_params
-      expect(response).to render_template(nil)
+  describe 'GET /api/tasks' do
+    include_context :doorkeeper_app_with_token
+    let!(:task_1) { create(:task, user: user) }
+
+    before do
+      get :index, params: { access_token: access_token.token }
     end
 
-    it 'ok' do
-      get :index, params: request_params
-      expect(response.status).to eq(200)
+    it 'retrives all tasks' do
+      expect(JSON.parse(response.body)).to eq([{'id' => task_1.id, 'title' => task_1.title, 'body' => task_1.body, 'priority' => task_1.priority, 'status' => task_1.status, 'date_task' => task_1.date_task.strftime("%Y-%m-%d"), 'created_at' => task_1.created_at.as_json, 'updated_at' => task_1.updated_at.as_json, 'user_id' => task_1.user_id}])
     end
+
   end
 
-  context 'action create' do
+  describe 'POST /api/tasks' do
+    include_context :doorkeeper_app_with_token
+    let(:date_task) { Date.tomorrow.to_s }
+    let(:request_params) {
+      {
+          access_token: access_token.token,
+          task: {
+              title: 'Title',
+              body: 'Description',
+              priority: 5,
+              date_task: date_task
+          }
+      }
+    }
 
-    it { expect { post :create, params: { task: create(:task) }, as: :json }.to change(Task, :count).by(1) }
-
-    it 'create ok' do
-      post :create, params: { task: create(:task) }, as: :json
-      expect(response.status).to eq(201)
+    before do
+      post :create, params: request_params
     end
 
-    it { expect { post :create, params: { task: { title: nil } }, as: :json }.to_not change(Task, :count) }
+    it {
+      task = user.tasks.last
+      expect(JSON.parse(response.body)).to eq({'id' => task.id, 'title' => 'Title', 'body' => 'Description', 'priority' => 5, 'status' => 0, 'date_task' => Date.parse(date_task).strftime("%Y-%m-%d"), 'created_at' => task.created_at.as_json, 'updated_at' => task.updated_at.as_json, 'user_id' => task.user_id})
+    }
   end
 
-  let!(:task) { create(:task, title: 'title1', user_id: user.id) }
+  describe 'PATCH /api/tasks/:id' do
+    include_context :doorkeeper_app_with_token
+    let(:task) { create(:task, user: user) }
+    let(:request_params) {
+      {
+          access_token: access_token.token,
+          task: {title: 'title'},
+          id: task.id
+      }
+    }
 
-  context 'action destroy' do
-    it 'removes task' do
-      expect { delete :destroy, params: { id: task.id }, as: :json }.to change(Task, :count).by(-1)
-    end
-
-    it 'delete ok' do
-      delete :destroy, params: { id: task.id }, as: :json
-      expect(response.status).to eq(200)
-    end
-  end
-
-  context 'action update' do
-
-    it 'changes task new title' do
-      put :update, params: { id: task, title: 'title2' }, as: :json
+    before do
+      put :update, params: request_params
       task.reload
-      expect(task.title).to eq('title2')
     end
+
+    it { expect(task.title).to eq('title') }
+  end
+
+  describe 'DELETE /api/tasks/:id' do
+    include_context :doorkeeper_app_with_token
+    let!(:task) { create(:task, user: user) }
+    let(:request_params) {
+      {
+          access_token: access_token.token,
+          id: task.id
+      }
+    }
+
+    it {expect {delete :destroy, params: request_params}.to change{ user.tasks.count }.from(1).to(0)}
   end
 
   context do
     it 'method destroy_multiple' do
       task = create(:task, user_id: user.id)
-      expect { delete :destroy_multiple, params: { ids: task.id }, as: :json }.to change(Task, :count).by(-1)
+      expect { delete :destroy_multiple, params: { ids: task.id, access_token: access_token.token }}.to change(Task, :count).by(-1)
     end
   end
 end
