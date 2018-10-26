@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {HashRouter, Route, Switch} from 'react-router-dom';
 import './App.css';
 import Signin from './component/Signin/Signin'
 import Registration from './component/Registration/Registration'
@@ -20,11 +20,11 @@ class App extends Component {
       </div>
     );
     return (
-      <BrowserRouter>
+      <HashRouter>
         <Switch>
           <App/>
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }

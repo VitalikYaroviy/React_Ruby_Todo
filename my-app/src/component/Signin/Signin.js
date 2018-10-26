@@ -12,7 +12,7 @@ class Signin extends Component {
       password: '',
       errors: {},
       message: '',
-      display: 'flex'
+      display: 'block'
     };
   }
 
@@ -55,7 +55,7 @@ class Signin extends Component {
   render() {
     return (
       <div>
-        {this.state.message ? <div id='popup' className="w-100 d-flex justify-content-center align-items-center bg-success text-white" style={{height: 50, display: this.state.display}}>
+        {this.state.message ? <div id='popup' className="w-100 text-center bg-success text-white" style={{height: 50, display: this.state.display, paddingTop: 10}}>
           {this.state.message}</div> : false}
         <Container className="w-25 my-5">
           <Col>
