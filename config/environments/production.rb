@@ -95,5 +95,5 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  ORIGIN = 'thawing-eyrie-58542.herokuapp.com'
+  HOST = 'thawing-eyrie-58542.herokuapp.com'
 end

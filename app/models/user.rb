@@ -22,9 +22,7 @@ class User < ApplicationRecord
   end
 
   def send_token_email
-    @user = self
-    @origin = ORIGIN
-    UserMailer.registration_confirmation(@user, @origin).deliver
+    UserMailer.registration_confirmation(self, HOST).deliver
   end
 
 end
