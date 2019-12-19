@@ -6,12 +6,13 @@ class TasksController < ApplicationController
   def index
     @tasks = current_user.tasks
     render json: @tasks, status: :ok
-    puts 'test' 
+    puts 'test'
   end
 
   def show; end
 
   def new
+    puts 'test2'
     @task = Task.new
   end
 
