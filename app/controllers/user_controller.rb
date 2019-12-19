@@ -12,6 +12,7 @@ class UserController < ApplicationController
   end
 
   def confirm_email
+    puts 'blaaaaaa'
     user = User.find(params[:id])
     user.email_activate if user.confirm_token
     render status: :ok
