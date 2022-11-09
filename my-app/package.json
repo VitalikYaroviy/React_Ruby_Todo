@@ -34,7 +34,7 @@
     "react-numeric-input": "^2.2.3",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.5",
+    "react-scripts": "5.0.1",
     "reactstrap": "^6.4.0",
     "redux-rest-resource": "^0.19.2",
     "regenerator-runtime": "^0.12.1"
